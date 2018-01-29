@@ -1,8 +1,5 @@
+from node import Operator
 import types
-
-
-class Node:
-    pass
 
 
 class NodeVisitor:
@@ -15,7 +12,7 @@ class NodeVisitor:
                 if isinstance(last, types.GeneratorType):
                     stack.append(last.send(last_result))
                     last_result = None
-                elif isinstance(last, Node):
+                elif isinstance(last, Operator):
                     stack.append(self._visit(stack.pop()))
                 else:
                     last_result = stack.pop()
@@ -24,50 +21,14 @@ class NodeVisitor:
         return last_result
 
     def _visit(self, node):
-        methname = 'visit_' + type(node).__name__
-        meth = getattr(self, methname, None)
-        if meth is None:
-            meth = self.generic_visit
-        return meth(node)
+        method_name = 'visit_' + type(node).__name__
+        method = getattr(self, method_name, None)
+        if method is None:
+            method = self.generic_visit
+        return method(node)
 
     def generic_visit(self, node):
         raise RuntimeError('No {} method'.format('visit_' + type(node).__name__))
-
-
-class UnaryOperator(Node):
-    def __init__(self, operand):
-        self.operand = operand
-
-
-class BinaryOperator(Node):
-    def __init__(self, left, right):
-        self.left = left
-        self.right = right
-
-
-class Add(BinaryOperator):
-    pass
-
-
-class Sub(BinaryOperator):
-    pass
-
-
-class Mul(BinaryOperator):
-    pass
-
-
-class Div(BinaryOperator):
-    pass
-
-
-class Negate(UnaryOperator):
-    pass
-
-
-class Number(Node):
-    def __init__(self, value):
-        self.value = value
 
 
 class Evaluator(NodeVisitor):
@@ -88,12 +49,3 @@ class Evaluator(NodeVisitor):
 
     def visit_Negate(self, node):
         yield -(yield node.operand)
-
-
-if __name__ == "__main__":
-    a =Number(0)
-    for n in range(1, 10000):
-        a = Add(a, Number(n))
-
-    e = Evaluator()
-    print(e.visit(a))
