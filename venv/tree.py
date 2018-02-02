@@ -9,10 +9,14 @@ char_operator = {'+': Add,
 
 class Tree:
     def __init__(self, string):
-        self.root = char_operator[string[0]]()
+        self.string = string
+        self.root = None
+    
+    def __enter__(self):
+        self.root = char_operator[self.string[0]]()
         queue = [self.root]
 
-        generator = iter(string)
+        generator = iter(self.string)
         next(generator)
 
         for i in queue:
@@ -20,3 +24,9 @@ class Tree:
                 current_node = char_operator[next(generator)]()
                 queue.append(current_node)
                 i.add_child(current_node)
+        
+        return self.root
+
+    def __exit__(self, exc_ty, exc_val, tb):
+        self.root = None
+        self.string = None

@@ -14,4 +14,7 @@ if __name__ == "__main__":
     test_tree = Tree(test_string)
 
     e = Evaluator()
-    print(e.visit(test_tree.root))
+
+    with Tree(test_string) as individual:
+        print(e.visit(individual))
+    
