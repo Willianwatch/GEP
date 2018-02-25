@@ -13,7 +13,7 @@ class Tree:
         self.root = None
         
     def __iter__(self):
-        r
+        return iter(self.string)
         
     def __enter__(self):
         self.root = char_operator[self.string[0]]()
@@ -23,7 +23,7 @@ class Tree:
         next(generator)
 
         for i in queue:
-            for j in range(len(i)):
+            for _ in range(len(i)):
                 current_node = char_operator[next(generator)]()
                 queue.append(current_node)
                 i.add_child(current_node)

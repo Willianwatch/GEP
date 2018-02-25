@@ -30,6 +30,7 @@ class Population:
         self.chromosome_size = length_of_head + length_of_tail
         self._population = np.column_stack((np.random.randint(0, len(char_operator.items),(self.population_size,length_of_head)),
                                             np.zeros((self.population_size,length_of_tail))))
+        
 
     def parse_individual(self, position):
         '''
