@@ -1,0 +1,1 @@
+training_data_set = [(i, -i+i**2-i**3) for i in range(50)]
