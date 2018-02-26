@@ -8,18 +8,18 @@ char_operator = {'0': Number,
 
 
 class Tree:
-    def __init__(self, string):
-        self.string = string
+    def __init__(self, sequence):
+        self.sequence = sequence
         self.root = None
         
     def __iter__(self):
-        return iter(self.string)
+        return iter(self.sequence)
         
     def __enter__(self):
-        self.root = char_operator[self.string[0]]()
+        self.root = char_operator[self.sequence[0]]()
         queue = [self.root]
 
-        generator = iter(self.string)
+        generator = iter(self.sequence)
         next(generator)
 
         for i in queue:
