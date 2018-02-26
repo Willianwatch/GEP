@@ -1,19 +1,31 @@
-import numpy as np
+import random
 
 class Test:
-    def __init__(self, length):
-        self.elements = np.zeros(length)
 
-    def __getitem__(self, position):
-        return self.elements[position]
+    count = 0
 
-    def change(self, position):
-        print(self[position::])
+    def __init__(self):
+        self.value = self.count
+        Test.count += 1
+
+    @classmethod
+    def fromvalues(cls, value):
+        cls.value = value
+        return cls
 
 
 def main():
-    test = Test(5)
-    test.change(3)
+    """
+    test = [Test() for _ in range(10)]
+    chosen = random.sample(test, 1)
+    print(len(chosen))
+    index = chosen[0].value
+    print(index)
+    print(chosen[0] is test[index])
+    print(Test.count)
+    """
+    a = Test.fromvalues(3)
+    print(a.value)
 
 if __name__ == "__main__":
     main()
