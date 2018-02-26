@@ -1,5 +1,6 @@
 from individual import Individual
 from operator import itemgetter
+import random
 
 
 class Population:
@@ -25,7 +26,13 @@ class Population:
 
     def mgg(self, max_generation):
         for i in range(max_generation):
-            pass
+            parents = random.sample(self, 2) 
+            father = parents[0]
+            mother = parents[1]
+            sub_population = 
 
     def search_for_best(self):
         return max(enumerate(self), key=lambda individual:individual.fitness)
+
+    def roulette(self):
+        pass
