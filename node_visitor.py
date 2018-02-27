@@ -28,7 +28,8 @@ class NodeVisitor:
         return method(node)
 
     def generic_visit(self, node):
-        raise RuntimeError('No {} method'.format('visit_' + type(node).__name__))
+        raise RuntimeError('No {} method'.format(
+            'visit_' + type(node).__name__))
 
 
 class Evaluator(NodeVisitor):

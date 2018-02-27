@@ -8,6 +8,12 @@ class Test:
         self.value = self.count
         Test.count += 1
 
+    def __len__(self):
+        return 2
+
+    def __str__(self):
+        return str(self.__len__())
+
     @classmethod
     def fromvalues(cls, value):
         cls.value = value
@@ -24,8 +30,12 @@ def main():
     print(chosen[0] is test[index])
     print(Test.count)
     """
+    """
     a = Test.fromvalues(3)
     print(a.value)
+    """
+    a = Test()
+    print(a)
 
 if __name__ == "__main__":
     main()
