@@ -36,7 +36,6 @@ class Individual:
         e = Evaluator()
         with Tree(self) as individual:
             self.fitness = np.exp(-np.var(self.training_data_set_output - e.visit(individual)))
-        return self.fitness
 
     def crossover(self, another:Individual):
         crossover_point_one = random.randint(0, self.individual_restriction - 1)
@@ -60,7 +59,7 @@ class Individual:
         mutate_gene_length = random.randint(1, self.individual_restriction - mutate_point_one)
 
         MUTATE_PART = slice(mutate_point_one, mutate_point_one + mutate_gene_length)
-        
+
         exchange_part = np.random.randint(0, len(char_operator), size=mutate_gene_length)
         self.chromosome[MUTATE_PART] = exchange_part
         

@@ -1,5 +1,5 @@
 from individual import Individual
-from operator import itemgetter
+from operator import itemgetter, methodcaller
 import random
 from functools import reduce
 
@@ -42,7 +42,8 @@ class Population:
         return max(enumerate(self), key=lambda individual:individual.fitness)
 
     def get_fitness(self):
-        map()
+        calculate_fitness = methodcaller("parse_individual")
+        map(calculate_fitness, self)
 
     def roulette(self):
         pass
