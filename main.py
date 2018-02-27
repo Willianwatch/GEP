@@ -8,12 +8,10 @@ tree.py 里面包含了由字符串到表达式树的实现过程
 """
 from node_visitor import Evaluator
 from tree import Tree
-from ga_mgg import Population
+
 
 def main():
-    population = Population(size=50, restriction=10, crossover=0.9, mutate=0.1, gap=40)
-    population.generate_initial_population()
-    population.search_for_best()
+    pass
     
     
 if __name__ == "__main__":

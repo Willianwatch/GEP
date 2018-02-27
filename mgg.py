@@ -1,6 +1,7 @@
 from individual import Individual
 from operator import itemgetter
 import random
+from functools import reduce
 
 
 class Population:
@@ -24,15 +25,24 @@ class Population:
     def __getitem__(self, position):
         return self.population[position]
 
+    @staticmethod
+    def merge(x:list, y:list):
+        x.extend(y)
+        return x
+
     def mgg(self, max_generation):
         for i in range(max_generation):
             parents = random.sample(self, 2) 
             father = parents[0]
             mother = parents[1]
-            sub_population = 
+            reduce(Population.merge, (father.crossover(mother) for _ in range(30)), parents)
+
 
     def search_for_best(self):
         return max(enumerate(self), key=lambda individual:individual.fitness)
+
+    def get_fitness(self):
+        map()
 
     def roulette(self):
         pass

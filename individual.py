@@ -9,6 +9,13 @@ class Individual:
 
     training_data_set_output = np.array([i[1] for i in training_data_set])
 
+    @classmethod
+    def fromsequence(cls, sequence, max_num_of_input=2):
+        cls.individual_restriction = len(sequence)
+        length_of_tail = (max_num_of_input - 1)*len(sequence) + 1
+        cls.chromosome = np.concatenate(sequence, np.zeros(length_of_tail))
+        cls.fitness = 0
+
     def __init__(self, length_of_head=50, max_num_of_input=2):
         self.individual_restriction = length_of_head
         length_of_tail = (max_num_of_input - 1)*length_of_head + 1
@@ -35,16 +42,25 @@ class Individual:
         crossover_point_one = random.randint(0, self.individual_restriction - 1)
         crossover_gene_length = random.randint(1, self.individual_restriction - crossover_point_one)
         crossover_point_two = random.randint(0, self.individual_restriction - crossover_gene_length)
+
         FIRST_PART = slice(crossover_point_one, crossover_point_one + crossover_gene_length)
         SECOND_PART = slice(crossover_point_two, crossover_point_two + crossover_gene_length)
-        temp_array = self[FIRST_PART].copy()
-        self.chromosome[FIRST_PART] = another[SECOND_PART]
-        another[SECOND_PART] = temp_array
+
+        FATHER = self.chromosome.copy()
+        MOTHER = another.chromosome.copy()
+
+        temp_array = FATHER[FIRST_PART].copy()
+        FATHER[FIRST_PART] = MOTHER[SECOND_PART]
+        MOTHER[SECOND_PART] = temp_array
+
+        return [Individual.fromsequence(i) for i in (FATHER, MOTHER)]
 
     def mutate(self):
         mutate_point_one = random.randint(0, self.individual_restriction - 1)
         mutate_gene_length = random.randint(1, self.individual_restriction - mutate_point_one)
+
         MUTATE_PART = slice(mutate_point_one, mutate_point_one + mutate_gene_length)
+        
         exchange_part = np.random.randint(0, len(char_operator), size=mutate_gene_length)
         self.chromosome[MUTATE_PART] = exchange_part
         
