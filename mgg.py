@@ -27,7 +27,14 @@ class Population:
         return self.population[position]
 
     def mgg(self, max_generation):
-        for i in range(max_generation):
+        """
+        Note that here get fitness and search for best can be done at a time.
+        """
+        Population.get_fitness(self)
+        best_pos = Population.search_for_best(self)
+        print("0"+self.population[best_pos].fitness)
+
+        for i in range(1, max_generation):
             parents_pos = random.sample(self.__len__(), 2)
 
             father = self[parents_pos[0]]
@@ -37,6 +44,11 @@ class Population:
             reduce(Population.merge, (father.crossover(mother) for _ in range(int(self.population_message["generation_gap"]/2))), sub_population)
             Population.get_fitness(sub_population[2::])
             best_and_roulette_pos = Population.best_and_roulette(sub_population)
+
+            self.population[parents_pos[0]], self.population[parents_pos[1]] = sub_population[best_and_roulette_pos[0]], \
+                                                                               sub_population[best_and_roulette_pos[1]]
+
+            print()
 
     @staticmethod
     def merge(x: list, y: list):
@@ -54,6 +66,11 @@ class Population:
 
     @staticmethod
     def best_and_roulette(sequence):
+        """
+        Note that here this function is not very efficient,choose the best one and the roulette one
+        can be done in two traverse, but this one will cost at least three.If you want to improve the
+        efficience, remember to use the function random.randomrange
+        """
         best_pos = Population.search_for_best(sequence)
         rest_fitness = np.array([i[1].fitness for i in enumerate(sequence) if i[0] != best_pos])
         roulette_pos = Population.roulette(rest_fitness)
@@ -77,3 +94,7 @@ class Population:
                 break
 
         return roulette_pos
+
+    @staticmethod
+    def best_roulette(sequence: np.array):
+        pass
