@@ -32,7 +32,9 @@ class Population:
         """
         Population.get_fitness(self)
         best_pos = Population.search_for_best(self)
-        print("0"+self.population[best_pos].fitness)
+        """
+        此处应有打印语句
+        """
 
         for i in range(1, max_generation):
             parents_pos = random.sample(self.__len__(), 2)
@@ -43,12 +45,23 @@ class Population:
             sub_population = [father, mother]
             reduce(Population.merge, (father.crossover(mother) for _ in range(int(self.population_message["generation_gap"]/2))), sub_population)
             Population.get_fitness(sub_population[2::])
-            best_and_roulette_pos = Population.best_and_roulette(sub_population)
+            fitness_list = map(lambda i: i.fitness, self)
+            best_and_roulette_pos = Population.best_and_roulette(fitness_list)
+            #self.population[parents_pos[0]], self.population[parents_pos[1]] = son, daughter \
+            #                                                                 = sub_population[best_and_roulette_pos[0]], sub_population[best_and_roulette_pos[1]]
 
-            self.population[parents_pos[0]], self.population[parents_pos[1]] = sub_population[best_and_roulette_pos[0]], \
-                                                                               sub_population[best_and_roulette_pos[1]]
+            """
+            现在已经知道了子代种群中最优个体和轮盘赌选择出来的个体的位置。
+            接下来要实现的逻辑是：
+            1、将子代种群中的最优个体和轮盘赌选择出来的个体替换掉父母个体
+            2、将最优个体与原来种群中的最优个体的适应度作比较，如果这个个体的适应度更大，那么将新一代种群中的最优个体标记为该个体，
+               否则，最优个体依然为原来种群中的最优个体
+            3、打印出最优个体的信息
+            """
+            # 
+                                                                               
 
-            print()
+            
 
     @staticmethod
     def merge(x: list, y: list):
@@ -57,7 +70,7 @@ class Population:
 
     @staticmethod
     def search_for_best(sequence):
-        return max(enumerate(sequence), key=lambda compound: compound[1].fitness)[0]
+        return max(enumerate(sequence), key=lambda compound: compound[1])[0]
 
     @staticmethod
     def get_fitness(sequence):
@@ -73,7 +86,8 @@ class Population:
         """
         best_pos = Population.search_for_best(sequence)
         rest_fitness = np.array([i[1].fitness for i in enumerate(sequence) if i[0] != best_pos])
-        roulette_pos = Population.roulette(rest_fitness)
+        rest_roulette_pos = Population.roulette(rest_fitness)
+        roulette_pos = rest_roulette_pos if rest_roulette_pos < best_pos else rest_roulette_pos + 1
         return best_pos, roulette_pos
 
     @staticmethod
@@ -95,6 +109,4 @@ class Population:
 
         return roulette_pos
 
-    @staticmethod
-    def best_roulette(sequence: np.array):
-        pass
+        
