@@ -16,6 +16,7 @@ class Population:
             "generation_gap": gap
         }
         self.population = [Individual(restriction) for _ in range(size)]
+        self.best_fitness_record = list()
 
     def __len__(self):
         return self.population_message["population_size"]
@@ -32,6 +33,7 @@ class Population:
         """
         Population.get_fitness(self)
         best_pos = Population.search_for_best(self)
+        self.best_fitness_record.append(self[best_pos].fitness)
         """
         此处应有打印语句
         """
@@ -58,7 +60,7 @@ class Population:
                否则，最优个体依然为原来种群中的最优个体
             3、打印出最优个体的信息
             """
-            # 
+            #
                                                                                
 
             
