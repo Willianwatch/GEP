@@ -30,6 +30,7 @@ class Population:
 
     def __setitem__(self, index, value):
         cls = type(self)
+        
         if isinstance(index, tuple):
             tuple(self.population[i] for i in index) = value
         elif isinstance(index, numbers.Integral):
