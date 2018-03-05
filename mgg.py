@@ -3,6 +3,7 @@ from operator import itemgetter, methodcaller
 import random
 from functools import reduce
 import numpy as np
+import numbers
 
 
 class Population:
@@ -26,6 +27,16 @@ class Population:
 
     def __getitem__(self, position):
         return self.population[position]
+
+    def __setitem__(self, index, value):
+        cls = type(self)
+        if isinstance(index, tuple):
+            tuple(self.population[i] for i in index) = value
+        elif isinstance(index, numbers.Integral):
+            self.population[index] = value
+        else:
+            msg = '{cls.__name__} indices must be integers'
+            raise TypeError(msg.format(cls=cls))
 
     def mgg(self, max_generation):
         """
