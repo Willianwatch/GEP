@@ -9,18 +9,17 @@ class Individual:
 
     training_data_set_output = np.array([i[1] for i in training_data_set])
 
-    @classmethod
-    def fromsequence(cls, sequence, max_num_of_input=2):
-        cls.individual_restriction = len(sequence)
-        length_of_tail = (max_num_of_input - 1)*len(sequence) + 1
-        cls.chromosome = np.concatenate(sequence, np.zeros(length_of_tail))
-        cls.fitness = 0
-
-    def __init__(self, length_of_head=50, max_num_of_input=2):
-        self.individual_restriction = length_of_head
-        length_of_tail = (max_num_of_input - 1)*length_of_head + 1
-        self.chromosome = np.concatenate((np.random.randint(0, len(char_operator), size=length_of_head),
-                                          np.zeros(length_of_tail)))
+    def __init__(self, sequence=None, length_of_head=50, max_num_of_input=2):
+        if sequence is None:
+            self.individual_restriction = length_of_head
+            length_of_tail = (max_num_of_input - 1)*length_of_head + 1
+            self.chromosome = np.concatenate((np.random.randint(0, len(char_operator), size=length_of_head),
+                                            np.zeros(length_of_tail)))
+        else:
+            self.individual_restriction = len(sequence)
+            length_of_tail = (max_num_of_input - 1)*length_of_head + 1
+            self.chromosome = np.concatenate(sequence, np.zeros(length_of_tail))
+        
         self.fitness = 0
         
     def __len__(self):
@@ -30,12 +29,18 @@ class Individual:
         return iter(self.chromosome)
 
     def __getitem__(self, position):
-        return self.chromosome[position]        
+        return self.chromosome[position]
+
+    def __setitem__(self, index, value):
+        self.chromosome[index] = value
 
     def parse_individual(self):
-        e = Evaluator()
-        with Tree(self) as individual:
-            self.fitness = np.exp(-np.var(self.training_data_set_output - e.visit(individual)))
+        if self.fitness != 0:
+            pass
+        else:
+            e = Evaluator()
+            with Tree(self) as individual:
+                self.fitness = np.exp(-np.var(self.training_data_set_output - e.visit(individual)))
 
     def crossover(self, another:Individual, crossover_ratio):
         if random.random() < crossover_ratio:
@@ -53,7 +58,7 @@ class Individual:
             FATHER[FIRST_PART] = MOTHER[SECOND_PART]
             MOTHER[SECOND_PART] = temp_array
 
-            return [Individual.fromsequence(i) for i in (FATHER, MOTHER)]
+            return [Individual(sequence=i) for i in (FATHER, MOTHER)]
         else:
             return []
 
@@ -65,7 +70,7 @@ class Individual:
             MUTATE_PART = slice(mutate_point_one, mutate_point_one + mutate_gene_length)
 
             exchange_part = np.random.randint(0, len(char_operator), size=mutate_gene_length)
-            self.chromosome[MUTATE_PART] = exchange_part
+            self[MUTATE_PART] = exchange_part
 
     def recombination(self, another: Individual, crossover_ratio, mutate_ratio):
         offsprings = self.crossover(another, crossover_ratio)
