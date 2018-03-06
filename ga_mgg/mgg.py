@@ -67,9 +67,8 @@ class Population:
         self.get_fitness()
         best_pos = Population.search_for_best(self)
         self.best_fitness_record.append((best_pos, self[best_pos].fitness))
-        """
-        此处应有打印语句
-        """
+
+        print("{generation:0>4}:{fitness:.8f}".format(generation=0, fitness=self[best_pos].fitness))
 
         for i in range(1, max_generation):
             parents_pos = random.sample(len(self), 2)
@@ -100,10 +99,11 @@ class Population:
                 self.best_fitness_record.append((parents_pos[0], self[parents_pos][0].fitness))
             else:
                 self.best_fitness_record.append(self.best_fitness_record[-1])
-            
+
+            print("{generation:0>4}:{fitness:.8f}".format(generation=i, self.best_fitness_record[-1][1]))
 
     @staticmethod
-    def merge(x: list, y: list):
+    def merge(x, y):
         x.extend(y)
         return x
 
