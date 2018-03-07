@@ -1,5 +1,6 @@
-from node import Operator
 import types
+
+from .node import Operator
 
 
 class NodeVisitor:

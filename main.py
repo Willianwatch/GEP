@@ -1,10 +1,10 @@
-from ga_mgg.mgg import Population
+from ga_mgg import mgg
+
 
 def main():
-    terminator = Population()
-    terminator.mgg()
+    terminator = mgg.Population()
+    terminator.mgg(10000)
+    
 
-    
-    
 if __name__ == "__main__":
     main() 

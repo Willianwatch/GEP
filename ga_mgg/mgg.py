@@ -1,9 +1,10 @@
-from individual import Individual
-from operator import itemgetter, methodcaller
+from operator import methodcaller
 import random
 from functools import reduce
 import numpy as np
 import numbers
+
+from .individual import Individual
 
 
 class Population:
@@ -65,18 +66,19 @@ class Population:
         Note that here get fitness and search for best can be done at a time.
         """
         self.get_fitness()
-        best_pos = Population.search_for_best(self)
+        first_gen_fitness = [i.fitness for i in self]
+        best_pos = Population.search_for_best(first_gen_fitness)
         self.best_fitness_record.append((best_pos, self[best_pos].fitness))
 
         print("{generation:0>4}:{fitness:.8f}".format(generation=0, fitness=self[best_pos].fitness))
 
         for i in range(1, max_generation):
-            parents_pos = random.sample(len(self), 2)
+            parents_pos = random.sample(range(len(self)), 2)
 
             father, mother = self[parents_pos]
 
             family = [father, mother]
-            reduce(Population.merge, (father.crossover(mother) for _ in range(int(self.population_message["generation_gap"]/2))), family)
+            reduce(Population.merge, (father.crossover(mother, self.population_message["crossover_ratio"]) for _ in range(int(self.population_message["generation_gap"]/2))), family)
 
             sub_population = Population(li=family)
             sub_population.get_fitness()
@@ -95,12 +97,12 @@ class Population:
             self[parents_pos] = sub_population[best_and_roulette_pos]
 
             # 第2步
-            if self[parents_pos][0].fitness > self.best_fitness_record[-1]:
+            if self[parents_pos][0].fitness > self.best_fitness_record[-1][1]:
                 self.best_fitness_record.append((parents_pos[0], self[parents_pos][0].fitness))
             else:
                 self.best_fitness_record.append(self.best_fitness_record[-1])
 
-            print("{generation:0>4}:{fitness:.8f}".format(generation=i, self.best_fitness_record[-1][1]))
+            print("{generation:0>4}:{fitness:.8f}".format(generation=i, fitness=self.best_fitness_record[-1][1]))
 
     @staticmethod
     def merge(x, y):

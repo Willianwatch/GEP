@@ -1,11 +1,11 @@
-from node import Add, Sub, Mul, Negate, Number
+from .node import Add, Sub, Mul, Negate, Number
 
 
-char_operator = {'0': Number,
-                 '1': Negate,
-                 '2': Add,
-                 '3': Sub,
-                 '4': Mul}
+char_operator = {0: Number,
+                 1: Negate,
+                 2: Add,
+                 3: Sub,
+                 4: Mul}
 
 
 class Tree:

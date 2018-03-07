@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 import numpy as np
-from data import training_data_set
+
+from .data import training_data_set
 
 
 class Operator(metaclass=ABCMeta):

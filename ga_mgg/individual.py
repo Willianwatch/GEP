@@ -1,8 +1,9 @@
 import random
 import numpy as np
-from tree import char_operator, Tree
-from node_visitor import Evaluator
-from data import training_data_set
+
+from .tree import char_operator, Tree
+from .node_visitor import Evaluator
+from .data import training_data_set
 
 
 class Individual:
@@ -18,7 +19,7 @@ class Individual:
         else:
             self.individual_restriction = len(sequence)
             length_of_tail = (max_num_of_input - 1)*length_of_head + 1
-            self.chromosome = np.concatenate(sequence, np.zeros(length_of_tail))
+            self.chromosome = np.concatenate((np.array(sequence), np.zeros(length_of_tail)))
         
         self.fitness = 0
         
@@ -42,7 +43,7 @@ class Individual:
             with Tree(self) as individual:
                 self.fitness = np.exp(-np.var(self.training_data_set_output - e.visit(individual)))
 
-    def crossover(self, another:Individual, crossover_ratio):
+    def crossover(self, another, crossover_ratio):
         if random.random() < crossover_ratio:
             crossover_point_one = random.randint(0, self.individual_restriction - 1)
             crossover_gene_length = random.randint(1, self.individual_restriction - crossover_point_one)
@@ -72,7 +73,7 @@ class Individual:
             exchange_part = np.random.randint(0, len(char_operator), size=mutate_gene_length)
             self[MUTATE_PART] = exchange_part
 
-    def recombination(self, another: Individual, crossover_ratio, mutate_ratio):
+    def recombination(self, another, crossover_ratio, mutate_ratio):
         offsprings = self.crossover(another, crossover_ratio)
         map(lambda i: i.mutate(mutate_ratio), offsprings)
 
