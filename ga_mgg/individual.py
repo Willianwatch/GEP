@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import math
 
 from .tree import char_operator, Tree
 from .node_visitor import Evaluator
@@ -41,7 +42,7 @@ class Individual:
         else:
             e = Evaluator()
             with Tree(self) as individual:
-                self.fitness = np.exp(-np.var(self.training_data_set_output - e.visit(individual)))
+                self.fitness = np.std(self.training_data_set_output - e.visit(individual))
 
     def crossover(self, another, crossover_ratio):
         if random.random() < crossover_ratio:

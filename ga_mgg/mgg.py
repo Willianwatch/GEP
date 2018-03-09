@@ -1,4 +1,3 @@
-from operator import methodcaller
 import random
 from functools import reduce
 import numpy as np
@@ -22,7 +21,7 @@ class Population:
         else:
             self.population_message = {}
             self.population = li
-        
+
         self.best_fitness_record = list()
 
     def __len__(self):
@@ -44,7 +43,7 @@ class Population:
 
     def __setitem__(self, index, value):
         cls = type(self)
-        
+
         if isinstance(index, tuple) or isinstance(index, list):
             if len(index) != len(value):
                 raise RuntimeError("Error argument!")
@@ -58,8 +57,8 @@ class Population:
             raise TypeError(msg.format(cls=cls))
 
     def get_fitness(self):
-        calculate_fitness = methodcaller("parse_individual")
-        map(calculate_fitness, self)
+        for i in self:
+            i.parse_individual()
 
     def mgg(self, max_generation):
         """
@@ -78,13 +77,14 @@ class Population:
             father, mother = self[parents_pos]
 
             family = [father, mother]
-            reduce(Population.merge, (father.crossover(mother, self.population_message["crossover_ratio"]) for _ in range(int(self.population_message["generation_gap"]/2))), family)
+            reduce(Population.merge, (father.crossover(mother, self.population_message["crossover_ratio"]) for _ in
+                                      range(int(self.population_message["generation_gap"] / 2))), family)
 
             sub_population = Population(li=family)
             sub_population.get_fitness()
             fitness_list = map(lambda i: i.fitness, self)
             best_and_roulette_pos = Population.best_and_roulette(fitness_list)
-            
+
             """
             现在已经知道了子代种群中最优个体和轮盘赌选择出来的个体的位置。
             接下来要实现的逻辑是：
@@ -97,7 +97,7 @@ class Population:
             self[parents_pos] = sub_population[best_and_roulette_pos]
 
             # 第2步
-            if self[parents_pos][0].fitness > self.best_fitness_record[-1][1]:
+            if self[parents_pos][0].fitness < self.best_fitness_record[-1][1]:
                 self.best_fitness_record.append((parents_pos[0], self[parents_pos][0].fitness))
             else:
                 self.best_fitness_record.append(self.best_fitness_record[-1])
@@ -111,8 +111,7 @@ class Population:
 
     @staticmethod
     def search_for_best(sequence):
-        return max(enumerate(sequence), key=lambda compound: compound[1])[0]
-
+        return min(enumerate(sequence), key=lambda compound: compound[1])[0]
 
     @staticmethod
     def best_and_roulette(sequence):
@@ -145,5 +144,3 @@ class Population:
                 break
 
         return roulette_pos
-
-        
