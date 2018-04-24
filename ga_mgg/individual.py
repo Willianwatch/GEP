@@ -10,8 +10,9 @@ from .data import training_data_set
 class Individual:
 
     training_data_set_output = np.array([i[1] for i in training_data_set])
+    print(training_data_set_output)
 
-    def __init__(self, sequence=None, length_of_head=50, max_num_of_input=2):
+    def __init__(self, sequence=None, length_of_head=10, max_num_of_input=2):
         if sequence is None:
             self.individual_restriction = length_of_head
             length_of_tail = (max_num_of_input - 1)*length_of_head + 1
@@ -21,7 +22,7 @@ class Individual:
             self.individual_restriction = len(sequence)
             length_of_tail = (max_num_of_input - 1)*length_of_head + 1
             self.chromosome = np.concatenate((np.array(sequence), np.zeros(length_of_tail)))
-        
+
         self.fitness = 0
         
     def __len__(self):
@@ -36,13 +37,16 @@ class Individual:
     def __setitem__(self, index, value):
         self.chromosome[index] = value
 
+    def __str__(self):
+        return str(self.chromosome)
+
     def parse_individual(self):
         if self.fitness != 0:
             pass
         else:
             e = Evaluator()
             with Tree(self) as individual:
-                self.fitness = np.std(self.training_data_set_output - e.visit(individual))
+                self.fitness = np.linalg.norm(self.training_data_set_output - e.visit(individual), ord=2)
 
     def crossover(self, another, crossover_ratio):
         if random.random() < crossover_ratio:
@@ -53,8 +57,8 @@ class Individual:
             FIRST_PART = slice(crossover_point_one, crossover_point_one + crossover_gene_length)
             SECOND_PART = slice(crossover_point_two, crossover_point_two + crossover_gene_length)
 
-            FATHER = self.chromosome.copy()
-            MOTHER = another.chromosome.copy()
+            FATHER = self.chromosome[0:self.individual_restriction].copy()
+            MOTHER = another.chromosome[0:another.individual_restriction].copy()
 
             temp_array = FATHER[FIRST_PART].copy()
             FATHER[FIRST_PART] = MOTHER[SECOND_PART]

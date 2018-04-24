@@ -8,7 +8,7 @@ from .individual import Individual
 
 class Population:
 
-    def __init__(self, li=None, size=50, restriction=50, crossover=0.9, mutate=0.1, gap=40):
+    def __init__(self, li=None, size=50, restriction=10, crossover=0.9, mutate=0.1, gap=40):
         if li is None:
             self.population_message = {
                 "population_size": size,
@@ -78,7 +78,7 @@ class Population:
 
             family = [father, mother]
             reduce(Population.merge, (father.crossover(mother, self.population_message["crossover_ratio"]) for _ in
-                                      range(int(self.population_message["generation_gap"] / 2))), family)
+                                      range(self.population_message["generation_gap"])), family)
 
             sub_population = Population(li=family)
             sub_population.get_fitness()
@@ -118,7 +118,7 @@ class Population:
         """
         Note that here this function is not very efficient,choose the best one and the roulette one
         can be done in two traverse, but this one will cost at least three.If you want to improve the
-        efficience, remember to use the function random.randomrange
+        efficiency, remember to use the function random.randomrange
         """
         best_pos = Population.search_for_best(sequence)
         rest_fitness = np.array([i[1].fitness for i in enumerate(sequence) if i[0] != best_pos])
